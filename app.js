@@ -8,9 +8,11 @@ var expressLayouts = require('express-ejs-layouts');
 var app = express();
 var router = express.Router()
 
-var moongoose = require('mongoose');
-moongoose.connect('mongodb://localhost/animalshelter');
+var mongoose = require('mongoose');
+// mongoose.connect('mongodb://localhost/animalshelter');
 
+var mongoUri =  process.env.MONGOLAB_URI || 'mongodb://localhost/animalshelter';
+mongoose.connect(mongoUri);
 
 app.use(logger('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -19,11 +21,11 @@ app.use(expressLayouts)
 app.engine('ejs', require('ejs').renderFile);
 app.set('view engine', 'ejs');
 
-app.listen(3000)
+app.listen(process.env.PORT || 3000 )
 
 
 require("./models/animal");
-var Animal = moongoose.model("Animal");
+var Animal = mongoose.model("Animal");
 
 app.get("/animals", function(req, res){
     Animal.find({}, function (err, animals) {
